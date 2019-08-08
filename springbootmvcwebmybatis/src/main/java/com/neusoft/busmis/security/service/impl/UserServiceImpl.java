@@ -10,7 +10,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.neusoft.busmis.security.dao.IUserDao;
 import com.neusoft.busmis.security.model.ModuleModel;
@@ -20,17 +22,16 @@ import com.neusoft.busmis.security.service.IUserService;
 
 //用户的业务实现类
 @Service("userService23")
-
+@Transactional(rollbackFor=Exception.class)
 public class UserServiceImpl implements IUserService {
 	//取得User的DAO接口对象
-	
 	private SqlSessionFactory sessionfactory = null;
 	private String name = null;
 	private int age = 0;
 	@Autowired
 	private IUserDao userDao = null;
-	
-	
+	@Value("${server.port}")
+	private String port=null;
 	
 	public void setSessionfactory(SqlSessionFactory sessionfactory) {
 		this.sessionfactory = sessionfactory;
@@ -106,7 +107,7 @@ public class UserServiceImpl implements IUserService {
 	public List<UserModel> getListByAll() throws Exception {
 		List<UserModel> list=userDao.selectListByAll();
 		//提交事务
-		System.out.println("使用MyBatis API执行查询");
+		System.out.println("服务启动端口："+port);
 		return list;
 	}
 	
